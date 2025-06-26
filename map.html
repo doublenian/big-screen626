@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国地图交互可视化</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #2c3e50);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        .container {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            max-width: 1800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .map-container {
+            flex: 3;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            height: 75vh;
+        }
+        #china-map {
+            width: 100%;
+            height: 100%;
+        }
+        .info-panel {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+        }
+        .panel-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            text-align: center;
+            color: #4dc9ff;
+            text-shadow: 0 0 10px rgba(77, 201, 255, 0.5);
+        }
+        .province-info {
+            background: rgba(0, 30, 60, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .info-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #ffcc00;
+        }
+        .info-content {
+            font-size: 1.2rem;
+            line-height: 1.8;
+        }
+        .highlight {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .stat-item {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4dc9ff;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        .instructions {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+        .instructions h3 {
+            color: #ffcc00;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .instructions ul {
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: auto;
+        }
+        @media (max-width: 1200px) {
+            .container {
+                flex-direction: column;
+            }
+            .map-container, .info-panel {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>中国地图交互可视化</h1>
+        <p class="subtitle">点击任意省份查看详细信息，地图支持缩放、拖动和悬停效果</p>
+    </div>
+    
+    <div class="container">
+        <div class="map-container">
+            <div id="china-map"></div>
+        </div>
+        
+        <div class="info-panel">
+            <h2 class="panel-title">省份信息</h2>
+            <div class="province-info">
+                <div class="info-title">点击地图上的省份</div>
+                <div class="info-content">
+                    <p>点击左侧地图上的任意省份，此处将显示该省份的详细信息，包括人口、面积、GDP等数据。</p>
+                    <p>地图支持以下交互操作：</p>
+                    <ul>
+                        <li><span class="highlight">点击省份</span> - 查看详细信息</li>
+                        <li><span class="highlight">鼠标滚轮</span> - 缩放地图</li>
+                        <li><span class="highlight">鼠标拖拽</span> - 平移地图</li>
+                    </ul>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value">34</div>
+                        <div class="stat-label">省级行政区</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">14.1亿</div>
+                        <div class="stat-label">总人口</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">960万</div>
+                        <div class="stat-label">平方公里</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">56</div>
+                        <div class="stat-label">民族数量</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="instructions">
+                <h3>使用说明</h3>
+                <ul>
+                    <li>地图数据来源于阿里云DataV.GeoAtlas</li>
+                    <li>点击省份后，该省份会高亮显示并有动画效果</li>
+                    <li>鼠标悬停在省份上可查看名称</li>
+                    <li>双击地图可重置缩放和位置</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>© 2023 中国地图可视化 | 数据来源: 阿里云DataV.GeoAtlas | 使用ECharts绘制</p>
+    </div>
+
+    <script>
+        // 初始化ECharts实例
+        const chartDom = document.getElementById('china-map');
+        const myChart = echarts.init(chartDom);
+        
+        // 获取中国地图GeoJSON数据
+        fetch('https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json')
+            .then(response => response.json())
+            .then(geoJson => {
+                // 注册地图
+                echarts.registerMap('china', geoJson);
+                
+                // 模拟一些省份数据（实际应用中应从API获取）
+                const provinceData = [
+                    {name: '北京市', value: 2154},
+                    {name: '天津市', value: 1560},
+                    {name: '河北省', value: 7556},
+                    {name: '山西省', value: 3718},
+                    {name: '内蒙古自治区', value: 2534},
+                    {name: '辽宁省', value: 4351},
+                    {name: '吉林省', value: 2704},
+                    {name: '黑龙江省', value: 3751},
+                    {name: '上海市', value: 2487},
+                    {name: '江苏省', value: 8070},
+                    {name: '浙江省', value: 6457},
+                    {name: '安徽省', value: 6324},
+                    {name: '福建省', value: 4154},
+                    {name: '江西省', value: 4648},
+                    {name: '山东省', value: 10153},
+                    {name: '河南省', value: 9937},
+                    {name: '湖北省', value: 5927},
+                    {name: '湖南省', value: 6919},
+                    {name: '广东省', value: 12601},
+                    {name: '广西壮族自治区', value: 4960},
+                    {name: '海南省', value: 1008},
+                    {name: '重庆市', value: 3205},
+                    {name: '四川省', value: 8367},
+                    {name: '贵州省', value: 3856},
+                    {name: '云南省', value: 4830},
+                    {name: '西藏自治区', value: 366},
+                    {name: '陕西省', value: 3953},
+                    {name: '甘肃省', value: 2626},
+                    {name: '青海省', value: 603},
+                    {name: '宁夏回族自治区', value: 720},
+                    {name: '新疆维吾尔自治区', value: 2585},
+                    {name: '台湾省', value: 2359},
+                    {name: '香港特别行政区', value: 750},
+                    {name: '澳门特别行政区', value: 68}
+                ];
+                
+                // 配置项
+                const option = {
+                    title: {
+                        text: '中国省级行政区划图',
+                        subtext: '数据来源：阿里云DataV',
+                        left: 'center',
+                        textStyle: {
+                            color: '#fff'
+                        },
+                        subtextStyle: {
+                            color: 'rgba(255,255,255,0.7)'
+                        }
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{b}'
+                    },
+                    visualMap: {
+                        min: 0,
+                        max: 13000,
+                        text: ['高', '低'],
+                        realtime: false,
+                        calculable: true,
+                        inRange: {
+                            color: ['#4575b4', '#74add1', '#abd9e9', '#e0f3f8', '#fee090', '#fdae61', '#f46d43', '#d73027']
+                        },
+                        textStyle: {
+                            color: '#fff'
+                        }
+                    },
+                    series: [{
+                        name: '中国',
+                        type: 'map',
+                        map: 'china',
+                        roam: true,
+                        zoom: 1.2,
+                        emphasis: {
+                            label: {
+                                show: true,
+                                color: '#fff',
+                                fontSize: 14
+                            },
+                            itemStyle: {
+                                areaColor: '#ffcc00',
+                                borderColor: '#fff',
+                                borderWidth: 2
+                            }
+                        },
+                        select: {
+                            itemStyle: {
+                                areaColor: '#ff6b6b',
+                                borderColor: '#fff',
+                                borderWidth: 3
+                            },
+                            label: {
+                                color: '#fff',
+                                fontWeight: 'bold'
+                            }
+                        },
+                        data: provinceData
+                    }]
+                };
+                
+                // 使用配置项显示图表
+                myChart.setOption(option);
+                
+                // 添加点击事件
+                myChart.on('click', (params) => {
+                    // 更新信息面板
+                    const infoPanel = document.querySelector('.province-info');
+                    infoPanel.querySelector('.info-title').textContent = params.name;
+                    
+                    // 模拟一些省份数据
+                    const populations = {
+                        '北京市': '2154万',
+                        '天津市': '1560万',
+                        '河北省': '7556万',
+                        '山西省': '3718万',
+                        '内蒙古自治区': '2534万',
+                        '辽宁省': '4351万',
+                        '吉林省': '2704万',
+                        '黑龙江省': '3751万',
+                        '上海市': '2487万',
+                        '江苏省': '8070万',
+                        '浙江省': '6457万',
+                        '安徽省': '6324万',
+                        '福建省': '4154万',
+                        '江西省': '4648万',
+                        '山东省': '10153万',
+                        '河南省': '9937万',
+                        '湖北省': '5927万',
+                        '湖南省': '6919万',
+                        '广东省': '12601万',
+                        '广西壮族自治区': '4960万',
+                        '海南省': '1008万',
+                        '重庆市': '3205万',
+                        '四川省': '8367万',
+                        '贵州省': '3856万',
+                        '云南省': '4830万',
+                        '西藏自治区': '366万',
+                        '陕西省': '3953万',
+                        '甘肃省': '2626万',
+                        '青海省': '603万',
+                        '宁夏回族自治区': '720万',
+                        '新疆维吾尔自治区': '2585万',
+                        '台湾省': '2359万',
+                        '香港特别行政区': '750万',
+                        '澳门特别行政区': '68万'
+                    };
+                    
+                    const areas = {
+                        '北京市': '1.64万 km²',
+                        '天津市': '1.19万 km²',
+                        '河北省': '18.88万 km²',
+                        '山西省': '15.67万 km²',
+                        '内蒙古自治区': '118.3万 km²',
+                        '辽宁省': '14.8万 km²',
+                        '吉林省': '18.74万 km²',
+                        '黑龙江省': '47.3万 km²',
+                        '上海市': '0.63万 km²',
+                        '江苏省': '10.72万 km²',
+                        '浙江省': '10.55万 km²',
+                        '安徽省': '14.01万 km²',
+                        '福建省': '12.4万 km²',
+                        '江西省': '16.7万 km²',
+                        '山东省': '15.8万 km²',
+                        '河南省': '16.7万 km²',
+                        '湖北省': '18.59万 km²',
+                        '湖南省': '21.18万 km²',
+                        '广东省': '17.97万 km²',
+                        '广西壮族自治区': '23.76万 km²',
+                        '海南省': '3.54万 km²',
+                        '重庆市': '8.24万 km²',
+                        '四川省': '48.6万 km²',
+                        '贵州省': '17.6万 km²',
+                        '云南省': '39.4万 km²',
+                        '西藏自治区': '122.8万 km²',
+                        '陕西省': '20.56万 km²',
+                        '甘肃省': '45.37万 km²',
+                        '青海省': '72.23万 km²',
+                        '宁夏回族自治区': '6.64万 km²',
+                        '新疆维吾尔自治区': '166万 km²',
+                        '台湾省': '3.6万 km²',
+                        '香港特别行政区': '1106 km²',
+                        '澳门特别行政区': '33 km²'
+                    };
+                    
+                    const capitals = {
+                        '北京市': '北京',
+                        '天津市': '天津',
+                        '河北省': '石家庄',
+                        '山西省': '太原',
+                        '内蒙古自治区': '呼和浩特',
+                        '辽宁省': '沈阳',
+                        '吉林省': '长春',
+                        '黑龙江省': '哈尔滨',
+                        '上海市': '上海',
+                        '江苏省': '南京',
+                        '浙江省': '杭州',
+                        '安徽省': '合肥',
+                        '福建省': '福州',
+                        '江西省': '南昌',
+                        '山东省': '济南',
+                        '河南省': '郑州',
+                        '湖北省': '武汉',
+                        '湖南省': '长沙',
+                        '广东省': '广州',
+                        '广西壮族自治区': '南宁',
+                        '海南省': '海口',
+                        '重庆市': '重庆',
+                        '四川省': '成都',
+                        '贵州省': '贵阳',
+                        '云南省': '昆明',
+                        '西藏自治区': '拉萨',
+                        '陕西省': '西安',
+                        '甘肃省': '兰州',
+                        '青海省': '西宁',
+                        '宁夏回族自治区': '银川',
+                        '新疆维吾尔自治区': '乌鲁木齐',
+                        '台湾省': '台北',
+                        '香港特别行政区': '香港',
+                        '澳门特别行政区': '澳门'
+                    };
+                    
+                    const content = `
+                        <p><span class="highlight">省会/首府：</span> ${capitals[params.name] || '暂无数据'}</p>
+                        <p><span class="highlight">人口：</span> ${populations[params.name] || '暂无数据'}</p>
+                        <p><span class="highlight">面积：</span> ${areas[params.name] || '暂无数据'}</p>
+                        <p><span class="highlight">简介：</span> ${params.name}是中国的一个省级行政区，拥有悠久的历史和丰富的文化。</p>
+                    `;
+                    
+                    infoPanel.querySelector('.info-content').innerHTML = content;
+                    
+                    // 高亮选中的省份
+                    myChart.dispatchAction({
+                        type: 'highlight',
+                        name: params.name
+                    });
+                    
+                    // 将选中的省份置于中心
+                    myChart.dispatchAction({
+                        type: 'geoRoam',
+                        name: params.name,
+                        center: params.event.event.offsetX ? [params.event.event.offsetX, params.event.event.offsetY] : undefined
+                    });
+                });
+                
+                // 添加双击事件重置视图
+                myChart.on('dblclick', () => {
+                    myChart.dispatchAction({
+                        type: 'geoRoam',
+                        zoom: 1.2,
+                        center: [105, 38]
+                    });
+                });
+                
+                // 窗口大小改变时重新调整图表大小
+                window.addEventListener('resize', () => {
+                    myChart.resize();
+                });
+            })
+            .catch(error => {
+                console.error('加载地图数据失败:', error);
+                document.getElementById('china-map').innerHTML = `
+                    <div style="color: #ff6b6b; text-align: center; padding: 50px;">
+                        <h2>地图加载失败</h2>
+                        <p>请检查网络连接后刷新页面</p>
+                    </div>
+                `;
+            });
+    </script>
+</body>
+</html>
