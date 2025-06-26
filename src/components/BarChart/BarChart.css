@@ -1,0 +1,196 @@
+.bar-chart {
+  background: linear-gradient(135deg, rgba(77, 201, 255, 0.08) 0%, rgba(0, 212, 255, 0.15) 100%);
+  border: 1px solid rgba(77, 201, 255, 0.3);
+  border-radius: 12px;
+  padding: 12px;
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 4px 20px rgba(77, 201, 255, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.bar-chart:hover {
+  border-color: rgba(77, 201, 255, 0.5);
+  box-shadow:
+    0 8px 25px rgba(77, 201, 255, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.bar-chart__title {
+  font-size: 16px;
+  color: #ffffff;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.bar-chart__container {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  height: 120px;
+  padding: 0 8px;
+  margin-bottom: 16px;
+}
+
+/* 双重条形图样式 */
+.bar-chart__group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.bar-chart__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 100px;
+  margin-bottom: 8px;
+}
+
+.bar-chart__bar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 16px;
+}
+
+.bar-chart__bar {
+  width: 100%;
+  min-height: 2px;
+  border-radius: 2px;
+  transition: height 0.8s ease-out;
+  position: relative;
+}
+
+.bar-chart__bar--male {
+  background: linear-gradient(to top, #4dc9ff, #00d4ff);
+  box-shadow: 0 0 8px rgba(77, 201, 255, 0.5);
+}
+
+.bar-chart__bar--female {
+  background: linear-gradient(to top, #ff6b9d, #ff8fab);
+  box-shadow: 0 0 8px rgba(255, 107, 157, 0.5);
+}
+
+.bar-chart__bar--single {
+  background: linear-gradient(to top, #4dc9ff, #00d4ff);
+  box-shadow: 0 0 8px rgba(77, 201, 255, 0.5);
+}
+
+/* 单一条形图样式 */
+.bar-chart__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.bar-chart__bar-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100px;
+  width: 24px;
+  margin-bottom: 8px;
+}
+
+.bar-chart__value {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 4px;
+  text-align: center;
+}
+
+.bar-chart__label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  line-height: 1.2;
+  word-break: break-all;
+}
+
+/* 图例样式 */
+.bar-chart__legend {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.bar-chart__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.bar-chart__legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.bar-chart__legend-color--male {
+  background: linear-gradient(135deg, #4dc9ff, #00d4ff);
+}
+
+.bar-chart__legend-color--female {
+  background: linear-gradient(135deg, #ff6b9d, #ff8fab);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .bar-chart {
+    min-height: 160px;
+    max-height: 200px;
+    padding: 10px;
+  }
+
+  .bar-chart__container {
+    height: 100px;
+    padding: 0 4px;
+  }
+
+  .bar-chart__bars {
+    height: 80px;
+  }
+
+  .bar-chart__bar-wrapper {
+    height: 80px;
+    width: 20px;
+  }
+
+  .bar-chart__bar-container {
+    width: 12px;
+  }
+
+  .bar-chart__title {
+    font-size: 14px;
+  }
+
+  .bar-chart__value {
+    font-size: 9px;
+  }
+
+  .bar-chart__label {
+    font-size: 10px;
+  }
+
+  .bar-chart__legend {
+    gap: 12px;
+  }
+
+  .bar-chart__legend-item {
+    font-size: 11px;
+  }
+}

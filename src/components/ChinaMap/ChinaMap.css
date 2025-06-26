@@ -1,0 +1,195 @@
+.china-map {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.china-map__title {
+  font-size: 16px;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.china-map__container {
+  flex: 1;
+  position: relative;
+  background: linear-gradient(135deg,
+      rgba(77, 201, 255, 0.05) 0%,
+      rgba(0, 212, 255, 0.02) 100%);
+  border: 1px solid rgba(77, 201, 255, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.china-map__svg {
+  width: 100%;
+  height: 100%;
+  max-width: 400px;
+  max-height: 300px;
+}
+
+.china-map__province {
+  fill: rgba(77, 201, 255, 0.2);
+  stroke: rgba(77, 201, 255, 0.4);
+  stroke-width: 0.5;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.china-map__province:hover {
+  fill: rgba(77, 201, 255, 0.4);
+  stroke: rgba(77, 201, 255, 0.8);
+  stroke-width: 1;
+}
+
+.china-map__province--highlighted {
+  fill: rgba(255, 107, 157, 0.3);
+  stroke: rgba(255, 107, 157, 0.6);
+  stroke-width: 1;
+}
+
+.china-map__province--highlighted:hover {
+  fill: rgba(255, 107, 157, 0.5);
+  stroke: rgba(255, 107, 157, 0.8);
+}
+
+.china-map__marker {
+  fill: #00ff88;
+  stroke: #ffffff;
+  stroke-width: 1;
+  filter: drop-shadow(0 0 8px #00ff88);
+  animation: pulse 2s infinite;
+}
+
+.china-map__marker-text {
+  fill: #ffffff;
+  font-size: 8px;
+  font-weight: 600;
+  text-anchor: start;
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.8));
+}
+
+.china-map__tooltip {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(77, 201, 255, 0.9);
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.china-map__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+}
+
+.china-map__info {
+  margin-top: 12px;
+}
+
+.china-map__legend {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.china-map__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.china-map__legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.china-map__legend-color--normal {
+  background: rgba(77, 201, 255, 0.3);
+}
+
+.china-map__legend-color--highlighted {
+  background: rgba(255, 107, 157, 0.4);
+}
+
+.china-map__legend-marker {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00ff88;
+  box-shadow: 0 0 6px #00ff88;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    r: 3;
+    opacity: 1;
+  }
+
+  50% {
+    r: 5;
+    opacity: 0.7;
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .china-map__title {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .china-map__svg {
+    max-width: 300px;
+    max-height: 200px;
+  }
+
+  .china-map__marker-text {
+    font-size: 7px;
+  }
+
+  .china-map__tooltip {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+
+  .china-map__legend {
+    gap: 12px;
+  }
+
+  .china-map__legend-item {
+    font-size: 10px;
+    gap: 4px;
+  }
+
+  .china-map__legend-color {
+    width: 10px;
+    height: 10px;
+  }
+
+  .china-map__legend-marker {
+    width: 6px;
+    height: 6px;
+  }
+}

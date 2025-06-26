@@ -1,0 +1,112 @@
+.gender-ratio-chart {
+  background: linear-gradient(135deg, rgba(77, 201, 255, 0.08) 0%, rgba(0, 212, 255, 0.15) 100%);
+  border: 1px solid rgba(77, 201, 255, 0.3);
+  border-radius: 12px;
+  padding: 12px;
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 4px 20px rgba(77, 201, 255, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.gender-ratio-chart:hover {
+  border-color: rgba(77, 201, 255, 0.5);
+  box-shadow:
+    0 8px 25px rgba(77, 201, 255, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.gender-ratio-chart__container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.gender-ratio-chart__labels {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.gender-ratio-chart__label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.gender-ratio-chart__label--male {
+  align-items: flex-start;
+}
+
+.gender-ratio-chart__label--female {
+  align-items: flex-end;
+}
+
+.gender-ratio-chart__label-title {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.gender-ratio-chart__label-value {
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.gender-ratio-chart__label--male .gender-ratio-chart__label-value {
+  color: #00d4ff;
+  text-shadow:
+    0 0 10px rgba(0, 212, 255, 0.6),
+    0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.gender-ratio-chart__label--female .gender-ratio-chart__label-value {
+  color: #00ffcc;
+  text-shadow:
+    0 0 10px rgba(0, 255, 204, 0.6),
+    0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* 装饰线条 */
+.gender-ratio-chart__label--male::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #00d4ff 100%);
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+}
+
+.gender-ratio-chart__label--female::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, #00ffcc 0%, transparent 100%);
+  box-shadow: 0 0 8px rgba(0, 255, 204, 0.6);
+}
